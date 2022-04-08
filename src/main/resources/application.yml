@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+spring:
+ application:
+   name: CUSTOMER-SERVICE
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    instance:
+      hostname: localhost
+
+managment:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      customerwithaddress:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 6
+        failureRateThreshold: 20
+        minimumNumberOfCalls: 3
+        automaticTransitionFroOpenToHalfOpenEnabled: true
+        waitDurationInOpenSTate: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
